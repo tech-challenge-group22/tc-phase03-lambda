@@ -26,7 +26,7 @@ jobs:
               run: npm run build # Certifique-se de que este comando compila seu código TypeScript
 
             - name: Zip
-              run: cd dist zip -r validate-customer.zip .
+              run: cd dist && zip -r validate-customer.zip .
 
             - name: Deploy to AWS
               uses: appleboy/lambda-action@master
