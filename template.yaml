@@ -6,6 +6,6 @@ Resources:
     validateCustomer:
         Type: AWS::Serverless::Function
         Properties:
-            Handler: index.handler
+            Handler: dist/index.handler
             Runtime: nodejs18.x
             Timeout: 20
