@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.1"
+  },
+  "scripts": {
+    "start": "sam local invoke validateCustomer -e event.json"
+  }
+}
