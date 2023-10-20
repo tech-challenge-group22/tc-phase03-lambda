@@ -35,7 +35,7 @@ jobs:
                   aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws_region: ${{ secrets.AWS_REGION }}
                   function_name: validate-customer
-                  zip_file: validate-customer.zip
+                  zip_file: dist/validate-customer.zip
 
             - name: Clean up
               run: npm ci
