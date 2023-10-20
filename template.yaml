@@ -8,4 +8,4 @@ Resources:
         Properties:
             Handler: dist/index.handler
             Runtime: nodejs18.x
-            Timeout: 30
+            Timeout: 20
