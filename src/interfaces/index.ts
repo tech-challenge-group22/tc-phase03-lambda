@@ -3,4 +3,5 @@ export interface IClient {
 	customer_cpf: string;
 	customer_name: string;
 	customer_email: string;
+	is_active: number;
 }
