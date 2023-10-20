@@ -5,7 +5,6 @@ name: Deploy Lambda Function
             - main
             - feat/fix-returns
 jobs:
-    runs-on: ubuntu-latest
     test:
         runs-on: ubuntu-latest
         steps:
@@ -20,18 +19,22 @@ jobs:
             - name: Test functions
               run: npm test
     build:
-        - name: Compile TypeScript
-          run: npm run build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Compile TypeScript
+              run: npm run build
     deploy:
-        - name: Zip files
-          run: cd dist && zip -r validate-customer.zip .
-        - name: Deploy to AWS
-          uses: appleboy/lambda-action@master
-          with:
-              aws_access_key_id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-              aws_secret_access_key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-              aws_region: "${{ secrets.AWS_REGION }}"
-              function_name: validate-customer
-              zip_file: dist/validate-customer.zip
-        - name: Clean up
-          run: npm ci
+        runs-on: ubuntu-latest
+        steps:
+            - name: Zip files
+              run: cd dist && zip -r validate-customer.zip .
+            - name: Deploy to AWS
+              uses: appleboy/lambda-action@master
+              with:
+                  aws_access_key_id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+                  aws_secret_access_key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+                  aws_region: "${{ secrets.AWS_REGION }}"
+                  function_name: validate-customer
+                  zip_file: dist/validate-customer.zip
+            - name: Clean up
+              run: npm ci
