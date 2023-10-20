@@ -2,6 +2,12 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import mysql from "mysql2";
 
+// Interfaces
+import { IClient } from "./interfaces";
+
+// Utils
+import { normalizeCpf, isValidCpf } from "./utils";
+
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();
 
@@ -12,17 +18,7 @@ const dbConnection = mysql.createConnection({
 	database: process.env.DB_DATABASE,
 });
 
-// Remove espaços em branco e caracteres de pontuação
-const normalizeCpf = (cpf) => {
-	return cpf.replace(/\D/g, "");
-};
-
-const isValidCpf = (cpf) => {
-	// Verifica se o CPF tem exatamente 11 dígitos
-	return normalizeCpf(cpf).length === 11;
-};
-
-const findCustomerByCPF = (cpf) => {
+const findCustomerByCPF = (cpf: string): Promise<any> => {
 	const normalizedCpf = normalizeCpf(cpf);
 	return new Promise((resolve, reject) => {
 		const query = "SELECT * FROM customers WHERE customer_cpf = ?";
@@ -30,13 +26,13 @@ const findCustomerByCPF = (cpf) => {
 			if (error) {
 				reject(error);
 			} else {
-				resolve(results[0]);
+				resolve(results);
 			}
 		});
 	});
 };
 
-const generateJWT = (customer) => {
+const generateJWT = (customer: IClient) => {
 	const payload = {
 		id: customer.id,
 		customer_cpf: customer.customer_cpf,
@@ -49,7 +45,7 @@ const generateJWT = (customer) => {
 	return jwt.sign(payload, `${secretKey}`, { expiresIn: 60 * 60 });
 };
 
-export const handler = async (event) => {
+export const handler = async (event: any) => {
 	try {
 		// Verifica se o body foi informado na requisição
 		if (event.body === undefined || event.body === null)
@@ -75,11 +71,11 @@ export const handler = async (event) => {
 				body: JSON.stringify({ message: "CPF inválido" }),
 			};
 
-		const customer = await findCustomerByCPF(cpf);
+		const customer = (await findCustomerByCPF(cpf)) as IClient[];
 
 		// Se retornou algum customer
 		if (customer) {
-			const jwtToken = generateJWT(customer);
+			const jwtToken = generateJWT(customer[0]);
 			return {
 				statusCode: 200,
 				body: JSON.stringify({ token: jwtToken }),
