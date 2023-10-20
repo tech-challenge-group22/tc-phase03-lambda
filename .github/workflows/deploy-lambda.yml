@@ -36,7 +36,7 @@ jobs:
               run: npm run build
 
             - name: Zip files
-              run: cd dist && zip -r validate-customer.zip .
+              run: cd ${{ github.workspace }}/dist && zip -r validate-customer.zip .
 
             - name: Deploy to AWS
               uses: appleboy/lambda-action@master
@@ -45,7 +45,7 @@ jobs:
                   aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws_region: ${{ secrets.AWS_REGION }}
                   function_name: validate-customer
-                  zip_file: dist/validate-customer.zip
+                  zip_file: ${{ github.workspace }}/dist/validate-customer.zip
 
             - name: Clean up
               run: npm ci
