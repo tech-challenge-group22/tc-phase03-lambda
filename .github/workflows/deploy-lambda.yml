@@ -23,7 +23,7 @@ jobs:
               run: npm install
 
             - name: Compile TypeScript
-              run: cp -r src/. dist/ && cp -r node_modules/. dist/node_modules/ && esbuild dist/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js # Certifique-se de que este comando compila seu código TypeScript
+              run: npm run build-deploy
 
             - name: Zip
               run: cd dist && zip -r validate-customer.zip .
