@@ -1,4 +1,4 @@
-import { normalizeCpf } from "../../src/utils/";
+import { normalizeCpf } from "./";
 
 describe("normalizeCpf", () => {
 	it("should remove blank spaces", () => {
