@@ -1,4 +1,4 @@
-import { isValidCpf } from "../../src/utils";
+import { isValidCpf } from "./";
 
 describe("isValidCpf", () => {
 	it("should return true for a valid cpf", () => {
