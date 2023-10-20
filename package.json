@@ -5,8 +5,10 @@
     "mysql2": "^3.6.1"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && sam local invoke validateCustomer -e event.json"
+  "prebuild": "rm -rf dist",
+  "build": "cp -r src/. dist/ && cp -r node_modules/. dist/node_modules/ && esbuild dist/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+  "postbuild": "cd dist && zip -r validate-customer.zip .",
+  "start": "npm run build && sam local invoke validateCustomer -e event.json"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.125",
