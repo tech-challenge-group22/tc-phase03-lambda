@@ -32,13 +32,18 @@ const findCustomerByCPF = (cpf: string): Promise<any> => {
 	});
 };
 
-const generateJWT = (customer: IClient) => {
-	const payload = {
-		id: customer.id,
-		customer_cpf: customer.customer_cpf,
-		customer_name: customer.customer_name,
-		customer_email: customer.customer_email,
-	};
+const generateJWT = (customer?: IClient) => {
+	let payload = {};
+
+	if (customer) {
+		payload = {
+			id: customer.id,
+			customer_cpf: customer.customer_cpf,
+			customer_name: customer.customer_name,
+			customer_email: customer.customer_email,
+			is_active: customer.is_active,
+		};
+	}
 
 	const secretKey = process.env.SECRET_KEY_JWT_TOKEN;
 
@@ -47,38 +52,36 @@ const generateJWT = (customer: IClient) => {
 
 export const handler = async (event: any) => {
 	try {
-		// Verifica se o body foi informado na requisição
-		if (event.body === undefined || event.body === null)
+		// Se não tiver body, retorna JWT sem payload
+		if (event.body === undefined || event.body === null) {
 			return {
-				statusCode: 400,
-				body: JSON.stringify({ message: "Body não informado" }),
+				statusCode: 200,
+				body: JSON.stringify({ token: generateJWT() }),
 			};
+		}
 
-		// Pega cpf
 		const { cpf } = JSON.parse(event.body);
-
-		// Verifica se o CPF foi informado
-		if (cpf === undefined)
+		// Se o campo CPF estiver vázio retorna JWT sem Payload
+		if (cpf === undefined || cpf === "") {
 			return {
-				statusCode: 400,
-				body: JSON.stringify({ message: "CPF não informado" }),
+				statusCode: 200,
+				body: JSON.stringify({ token: generateJWT() }),
 			};
+		}
 
-		// Verifica se o CPF é válido
-		if (!isValidCpf(cpf))
+		// Se o CPF for inválido retorna erro
+		if (!isValidCpf(cpf)) {
 			return {
 				statusCode: 400,
 				body: JSON.stringify({ message: "CPF inválido" }),
 			};
+		}
 
 		const customer = (await findCustomerByCPF(cpf)) as IClient[];
-
-		// Se retornou algum customer
-		if (customer) {
-			const jwtToken = generateJWT(customer[0]);
+		if (customer[0]) {
 			return {
 				statusCode: 200,
-				body: JSON.stringify({ token: jwtToken }),
+				body: JSON.stringify({ token: generateJWT(customer[0]) }),
 			};
 		} else {
 			return {
