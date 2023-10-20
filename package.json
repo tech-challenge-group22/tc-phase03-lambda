@@ -6,7 +6,7 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "cp -r node_modules/. dist/ && esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
     "start": "tsc && sam local invoke validateCustomer -e event.json"
   },
   "devDependencies": {
