@@ -5,12 +5,16 @@
     "mysql2": "^3.6.1"
   },
   "scripts": {
-    "build": "cp -r src/. dist/ && cp -r node_modules/. dist/node_modules/ && esbuild dist/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
-    "start": "tsc && sam local invoke validateCustomer -e event.json"
+  "prebuild": "rm -rf dist",
+  "build": "cp -r src/. dist/ && cp -r node_modules/. dist/node_modules/ && esbuild dist/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+  "postbuild": "cd dist && zip -r validate-customer.zip .",
+  "start": "tsc && sam local invoke validateCustomer -e event.json"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.125",
     "@types/jsonwebtoken": "^9.0.4",
     "@types/node": "^20.8.7",
+    "esbuild": "^0.19.5",
     "typescript": "^5.2.2"
   }
 }
