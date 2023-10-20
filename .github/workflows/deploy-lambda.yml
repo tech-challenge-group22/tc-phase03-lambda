@@ -3,7 +3,6 @@ name: Deploy Lambda Function
     push:
         branches:
             - main
-            - feat/fix-returns
 jobs:
     test:
         runs-on: ubuntu-latest
